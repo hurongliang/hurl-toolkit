@@ -10,10 +10,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -44,6 +41,11 @@ public class HttpUtil {
 		URI uri = buildURI(host, path, params);
 		HttpGet get = new HttpGet(uri);
 		return request(get);
+	}
+	public static String delete(String host, String path, Map<String, String> params) {
+		URI uri = buildURI(host, path, params);
+		HttpDelete del = new HttpDelete(uri);
+		return request(del);
 	}
 	
 	private static String request(HttpUriRequest request) {

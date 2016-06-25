@@ -14,6 +14,7 @@
 	<module>json</module>
 	<module>http</module>
 	<module>jdbc</module>
+    <module>elk</module>
   </modules>
 
   <properties>
