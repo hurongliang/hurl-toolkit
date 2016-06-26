@@ -17,8 +17,11 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpUtil {
+	private static final Logger LOG = LoggerFactory.getLogger(HttpUtil.class);
 	public static String post(String host, String path, Map<String, String> params, String body) {
 		URI uri = buildURI(host, path, params);
 		HttpPost put = new HttpPost(uri);
@@ -51,7 +54,9 @@ public class HttpUtil {
 	private static String request(HttpUriRequest request) {
 		CloseableHttpClient client = HttpClients.createDefault();
 		try {
-			return client.execute(request, new StringResponseHandler());
+			String res = client.execute(request, new StringResponseHandler());
+			LOG.debug("http" + request.getMethod() + request.getURI() + " response " + res);
+			return res;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

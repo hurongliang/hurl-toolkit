@@ -1,5 +1,7 @@
 package com.hurl.toolkit.elk;
 
+import com.hurl.toolkit.elk.data.ESDocument;
+import com.hurl.toolkit.elk.data.ESDocumentWithId;
 import com.hurl.toolkit.http.HttpUtil;
 import com.hurl.toolkit.json.JsonUtil;
 import org.apache.http.client.methods.HttpPost;
@@ -12,6 +14,16 @@ import java.util.Map;
  * Created by hurongliang on 16/6/25.
  */
 public class ES {
+    public static String bulk(String host, String index, String type, List< ? extends ESDocument> docs) {
+        StringBuffer sb = new StringBuffer();
+        for(ESDocument doc : docs){
+            if(doc instanceof ESDocumentWithId) {
+                sb.append("{\"index\" : {\"_id\" : \"" + ((ESDocumentWithId)doc).id() + "\"}}\n");
+            }
+            sb.append(JsonUtil.toString(doc) + "\n");
+        }
+        return HttpUtil.post(host, "/" + index + "/" + type + "/_bulk", new ESParams().toMap(), sb.toString());
+    }
     public static String setFieldMapping(String host, String index, String type, List<FieldMapping> mappings){
         Map<String, Object> typeMap = new HashMap<>();
         Map<String, Object> propertiesMap = new HashMap<>();

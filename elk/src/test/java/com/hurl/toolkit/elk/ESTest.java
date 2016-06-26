@@ -2,7 +2,9 @@ package com.hurl.toolkit.elk;
 
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,14 +12,14 @@ import java.util.List;
  */
 public class ESTest {
     private static final String host = "localhost:9200";
-    @Test
+//    @Test
     public void test(){
 //        System.out.println(ES.clusterHealth("localhost:9200"));
 //       System.out.println(ES.deleteIndex("localhost:9200", "cars"));
 //        System.out.println(ES.createIndex(host, "mrhq"));
         System.out.println(ES.status(host));
     }
-    @Test
+//    @Test
     public void setFieldMappings(){
 //        ES.closeIndex(host, "mrhq");
         List<FieldMapping> mappings = new ArrayList<>();
@@ -33,5 +35,15 @@ public class ESTest {
         mappings.add(FieldMapping.longField("turnover"));
 //        System.out.println(ES.setFieldMapping(host, "mrhq", "mrhq", mappings));
 //        ES.openIndex(host, "mrhq");
+    }
+    @Test
+    public void bulk(){
+        List<MrhqDocument> docs = new ArrayList<>();
+        MrhqDocument doc = new MrhqDocument();
+        doc.setGpdm("SH600000");
+        doc.setGpdmJ("600000");
+        doc.setRq(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        docs.add(doc);
+        ES.bulk(host, "mrhq", "mrhq", docs);
     }
 }
