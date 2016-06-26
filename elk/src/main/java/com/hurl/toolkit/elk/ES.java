@@ -14,7 +14,6 @@ import java.util.Map;
 public class ES {
     public static String setFieldMapping(String host, String index, String type, List<FieldMapping> mappings){
         Map<String, Object> typeMap = new HashMap<>();
-        mappingsMap.put(type, typeMap);
         Map<String, Object> propertiesMap = new HashMap<>();
         typeMap.put("properties", propertiesMap);
         for(FieldMapping mapping : mappings){
