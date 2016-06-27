@@ -19,13 +19,13 @@ public class ESTest {
 //        System.out.println(ES.createIndex(host, "mrhq"));
         System.out.println(ES.status(host));
     }
-//    @Test
+    @Test
     public void setFieldMappings(){
 //        ES.closeIndex(host, "mrhq");
         List<FieldMapping> mappings = new ArrayList<>();
         mappings.add(FieldMapping.stringField("gpdm", true));
         mappings.add(FieldMapping.intField("gpdmJ"));
-        mappings.add(FieldMapping.dateField("rq"));
+        mappings.add(FieldMapping.dateFieldWithFormat("rq", "yyyy-MM-dd"));
         mappings.add(FieldMapping.floatField("open"));
         mappings.add(FieldMapping.floatField("close"));
         mappings.add(FieldMapping.floatField("high"));
@@ -36,7 +36,7 @@ public class ESTest {
 //        System.out.println(ES.setFieldMapping(host, "mrhq", "mrhq", mappings));
 //        ES.openIndex(host, "mrhq");
     }
-    @Test
+//    @Test
     public void bulk(){
         List<MrhqDocument> docs = new ArrayList<>();
         MrhqDocument doc = new MrhqDocument();

@@ -21,24 +21,29 @@ public class FieldMapping {
     private boolean store = true;
     private String type;
     private boolean addRaw = false;
+    private String format;
 
     public static FieldMapping dateField(String name){
-        return valueField(name, TYPE_DATE);
+        return valueField(name, TYPE_DATE, null);
+    }
+    public static FieldMapping dateFieldWithFormat(String name, String formatPattern){
+
+        return valueField(name, TYPE_DATE, formatPattern);
     }
     public static FieldMapping booleanField(String name){
-        return valueField(name, TYPE_BOOLEAN);
+        return valueField(name, TYPE_BOOLEAN, null);
     }
     public static FieldMapping intField(String name){
-        return valueField(name, TYPE_INTEGER);
+        return valueField(name, TYPE_INTEGER, null);
     }
     public static FieldMapping longField(String name){
-        return valueField(name, TYPE_LONG);
+        return valueField(name, TYPE_LONG, null);
     }
     public static FieldMapping floatField(String name){
-        return valueField(name, TYPE_FLOAT);
+        return valueField(name, TYPE_FLOAT, null);
     }
     public static FieldMapping doubleField(String name){
-        return valueField(name, TYPE_DOUBLE);
+        return valueField(name, TYPE_DOUBLE, null);
     }
     public static FieldMapping stringField(String name, boolean analyzed){
         return textField(name, false);
@@ -46,13 +51,14 @@ public class FieldMapping {
     public static FieldMapping stringFieldWithRaw(String name, boolean analyzed){
         return textField(name, true);
     }
-    private static FieldMapping valueField(String name, String type){
+    private static FieldMapping valueField(String name, String type, String format){
         FieldMapping mapping = new FieldMapping();
         mapping.setName(name);
         mapping.setType(type);
         mapping.setIndex(INDEX_NOT_ANALYZED);
         mapping.setStore(true);
         mapping.setAddRaw(false);
+        mapping.setFormat(format);
         return mapping;
     }
     private static FieldMapping textField(String name, boolean addRow){
@@ -64,6 +70,15 @@ public class FieldMapping {
         mapping.setAddRaw(addRow);
         return mapping;
     }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
     public String getName() {
         return name;
     }

@@ -24,12 +24,16 @@ public class HttpUtil {
 	private static final Logger LOG = LoggerFactory.getLogger(HttpUtil.class);
 	public static String post(String host, String path, Map<String, String> params, String body) {
 		URI uri = buildURI(host, path, params);
+		LOG.debug("HTTP POST " + uri);
+		LOG.debug(body);
 		HttpPost put = new HttpPost(uri);
 		if(StringUtils.isNotEmpty(body)) {
 			StringEntity entity = new StringEntity(body, ContentType.create("text/plain", "utf-8"));
 			put.setEntity(entity);
 		}
-		return request(put);
+		String res = request(put);
+		LOG.debug(res);
+		return res;
 	}
 	public static String put(String host, String path, Map<String, String> params, String body) {
 		URI uri = buildURI(host, path, params);
@@ -50,12 +54,11 @@ public class HttpUtil {
 		HttpDelete del = new HttpDelete(uri);
 		return request(del);
 	}
-	
+
 	private static String request(HttpUriRequest request) {
 		CloseableHttpClient client = HttpClients.createDefault();
 		try {
 			String res = client.execute(request, new StringResponseHandler());
-			LOG.debug("http" + request.getMethod() + request.getURI() + " response " + res);
 			return res;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -42,6 +42,9 @@ public class ES {
                 rawMap.put("type", "string");
                 rawMap.put("index", FieldMapping.INDEX_NOT_ANALYZED);
             }
+            if(mapping.getFormat() != null) {
+                fieldMap.put("format", mapping.getFormat());
+            }
         }
         return HttpUtil.post(host, "/" + index + "/_mapping" + "/" + type , new ESParams().toMap(), JsonUtil.toString(typeMap));
     }
