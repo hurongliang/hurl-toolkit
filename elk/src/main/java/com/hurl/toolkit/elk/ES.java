@@ -4,6 +4,7 @@ import com.hurl.toolkit.elk.data.ESDocument;
 import com.hurl.toolkit.elk.data.ESDocumentWithId;
 import com.hurl.toolkit.http.HttpUtil;
 import com.hurl.toolkit.json.JsonUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpPost;
 
 import java.util.HashMap;
@@ -33,7 +34,6 @@ public class ES {
             propertiesMap.put(mapping.getName(), fieldMap);
             if(mapping.getType() != null) fieldMap.put("type", mapping.getType());
             if(mapping.getIndex() != null) fieldMap.put("index", mapping.getIndex());
-            fieldMap.put("store", mapping.isStore() ? "yes" : "not");
             if(mapping.isAddRaw()){
                 Map<String, Object> fieldInFieldMap = new HashMap<>();
                 fieldMap.put("fields", fieldInFieldMap);

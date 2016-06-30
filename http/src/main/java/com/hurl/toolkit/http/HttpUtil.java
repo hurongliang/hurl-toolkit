@@ -22,37 +22,32 @@ import org.slf4j.LoggerFactory;
 
 public class HttpUtil {
 	private static final Logger LOG = LoggerFactory.getLogger(HttpUtil.class);
-	public static String post(String host, String path, Map<String, String> params, String body) {
-		URI uri = buildURI(host, path, params);
-		LOG.debug("HTTP POST " + uri);
-		LOG.debug(body);
-		HttpPost put = new HttpPost(uri);
+
+	private static String httpOption(HttpUriRequest request, String body) {
 		if(StringUtils.isNotEmpty(body)) {
 			StringEntity entity = new StringEntity(body, ContentType.create("text/plain", "utf-8"));
-			put.setEntity(entity);
+			if (request instanceof HttpPut) {
+				((HttpPut)request).setEntity(entity);
+			} else if (request instanceof HttpPost){
+				((HttpPost)request).setEntity(entity);
+			}
 		}
-		String res = request(put);
-		LOG.debug(res);
+		LOG.debug("HTTP " + request.getMethod() + " " + request.getURI() + StringUtils.replace(body, "\n", ""));
+		String res = request(request);
+		LOG.debug("HTTP response " + request.getURI() + StringUtils.replace(res, "\n", ""));
 		return res;
 	}
+	public static String post(String host, String path, Map<String, String> params, String body) {
+		return httpOption(new HttpPost(buildURI(host, path, params)), body);
+	}
 	public static String put(String host, String path, Map<String, String> params, String body) {
-		URI uri = buildURI(host, path, params);
-		HttpPut put = new HttpPut(uri);
-		if(StringUtils.isNotEmpty(body)) {
-			StringEntity entity = new StringEntity(body, ContentType.create("text/plain", "utf-8"));
-			put.setEntity(entity);
-		}
-		return request(put);
+		return httpOption(new HttpPut(buildURI(host, path, params)), body);
 	}
 	public static String get(String host, String path, Map<String, String> params) {
-		URI uri = buildURI(host, path, params);
-		HttpGet get = new HttpGet(uri);
-		return request(get);
+		return httpOption(new HttpGet(buildURI(host, path, params)), null);
 	}
 	public static String delete(String host, String path, Map<String, String> params) {
-		URI uri = buildURI(host, path, params);
-		HttpDelete del = new HttpDelete(uri);
-		return request(del);
+		return httpOption(new HttpDelete(buildURI(host, path, params)), null);
 	}
 
 	private static String request(HttpUriRequest request) {

@@ -23,9 +23,9 @@ public class ESTest {
     public void setFieldMappings(){
 //        ES.closeIndex(host, "mrhq");
         List<FieldMapping> mappings = new ArrayList<>();
-        mappings.add(FieldMapping.stringField("gpdm", true));
+        mappings.add(FieldMapping.stringField("gpdm"));
         mappings.add(FieldMapping.intField("gpdmJ"));
-        mappings.add(FieldMapping.dateFieldWithFormat("rq", "yyyy-MM-dd"));
+        mappings.add(FieldMapping.dateField("rq", "yyyy-MM-dd"));
         mappings.add(FieldMapping.floatField("open"));
         mappings.add(FieldMapping.floatField("close"));
         mappings.add(FieldMapping.floatField("high"));

@@ -13,7 +13,6 @@ public class ESParams {
         return this;
     }
     public Map<String,String> toMap(){
-        map.put("pretty", "pretty");
         return map;
     }
 

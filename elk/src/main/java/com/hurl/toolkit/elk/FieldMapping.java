@@ -6,10 +6,7 @@ package com.hurl.toolkit.elk;
 public class FieldMapping {
     public static final String INDEX_ANALYZED = "analyzed";
     public static final String INDEX_NOT_ANALYZED = "not_analyzed";
-    public static final String INDEX_NO = "no";
     public static final String TYPE_STRING = "string";
-    public static final String TYPE_BYTE = "byte";
-    public static final String TYPE_SHORT = "short";
     public static final String TYPE_INTEGER = "integer";
     public static final String TYPE_LONG = "long";
     public static final String TYPE_FLOAT = "float";
@@ -18,57 +15,64 @@ public class FieldMapping {
     public static final String TYPE_DATE = "date";
     private String name;
     private String index;
-    private boolean store = true;
     private String type;
     private boolean addRaw = false;
     private String format;
 
     public static FieldMapping dateField(String name){
-        return valueField(name, TYPE_DATE, null);
+        return dateField(name, null);
     }
-    public static FieldMapping dateFieldWithFormat(String name, String formatPattern){
-
-        return valueField(name, TYPE_DATE, formatPattern);
-    }
-    public static FieldMapping booleanField(String name){
-        return valueField(name, TYPE_BOOLEAN, null);
-    }
-    public static FieldMapping intField(String name){
-        return valueField(name, TYPE_INTEGER, null);
-    }
-    public static FieldMapping longField(String name){
-        return valueField(name, TYPE_LONG, null);
-    }
-    public static FieldMapping floatField(String name){
-        return valueField(name, TYPE_FLOAT, null);
-    }
-    public static FieldMapping doubleField(String name){
-        return valueField(name, TYPE_DOUBLE, null);
-    }
-    public static FieldMapping stringField(String name, boolean analyzed){
-        return textField(name, false);
-    }
-    public static FieldMapping stringFieldWithRaw(String name, boolean analyzed){
-        return textField(name, true);
-    }
-    private static FieldMapping valueField(String name, String type, String format){
+    public static FieldMapping dateField(String name, String format){
         FieldMapping mapping = new FieldMapping();
         mapping.setName(name);
-        mapping.setType(type);
-        mapping.setIndex(INDEX_NOT_ANALYZED);
-        mapping.setStore(true);
-        mapping.setAddRaw(false);
+        mapping.setType(TYPE_DATE);
         mapping.setFormat(format);
         return mapping;
     }
-    private static FieldMapping textField(String name, boolean addRow){
+    public static FieldMapping stringField(String name){
+        return stringField(name, true, false);
+    }
+    public static FieldMapping stringFieldWithRaw(String name, boolean analyzed){
+        return stringField(name, analyzed, true);
+    }
+    public static FieldMapping stringFieldNotAnalyzed(String name){
+        return stringField(name, false, false);
+    }
+    private static FieldMapping stringField(String name, boolean analyzed, boolean addRaw){
         FieldMapping mapping = new FieldMapping();
         mapping.setName(name);
         mapping.setType(TYPE_STRING);
-        mapping.setIndex(INDEX_ANALYZED);
-        mapping.setStore(true);
-        mapping.setAddRaw(addRow);
+        if(analyzed){
+            mapping.setIndex(INDEX_ANALYZED);
+            mapping.setAddRaw(addRaw);
+        } else {
+            mapping.setIndex(INDEX_NOT_ANALYZED);
+        }
         return mapping;
+    }
+    public static FieldMapping booleanField(String name){
+        FieldMapping mapping = new FieldMapping();
+        mapping.setName(name);
+        mapping.setType(TYPE_BOOLEAN);
+        return mapping;
+    }
+    public static FieldMapping floatField(String name){
+        return numberField(name, TYPE_FLOAT);
+    }
+    public static FieldMapping doubleField(String name){
+        return numberField(name, TYPE_DOUBLE);
+    }
+    public static FieldMapping intField(String name) {
+        return numberField(name, TYPE_INTEGER);
+    }
+    public static FieldMapping longField(String name) {
+        return numberField(name, TYPE_LONG);
+    }
+    private static FieldMapping numberField(String name, String type){
+        FieldMapping m = new FieldMapping();
+        m.setName(name);
+        m.setType(type);
+        return m;
     }
 
     public String getFormat() {
@@ -93,14 +97,6 @@ public class FieldMapping {
 
     public void setIndex(String index) {
         this.index = index;
-    }
-
-    public boolean isStore() {
-        return store;
-    }
-
-    public void setStore(boolean store) {
-        this.store = store;
     }
 
     public String getType() {
