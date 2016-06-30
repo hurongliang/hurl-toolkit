@@ -32,9 +32,9 @@ public class HttpUtil {
 				((HttpPost)request).setEntity(entity);
 			}
 		}
-		LOG.debug("HTTP " + request.getMethod() + " " + request.getURI() + StringUtils.replace(body, "\n", ""));
+		LOG.debug("HTTP " + request.getMethod() + " " + request.getURI() + " " + (body == null ? "" : StringUtils.replace(body, "\n", "")));
 		String res = request(request);
-		LOG.debug("HTTP response " + request.getURI() + StringUtils.replace(res, "\n", ""));
+		LOG.debug("HTTP RESPONSE " + request.getURI() + " " + StringUtils.replace(res, "\n", ""));
 		return res;
 	}
 	public static String post(String host, String path, Map<String, String> params, String body) {
