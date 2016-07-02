@@ -32,22 +32,26 @@ public class HttpUtil {
 				((HttpPost)request).setEntity(entity);
 			}
 		}
-		LOG.debug("HTTP " + request.getMethod() + " " + request.getURI() + " " + (body == null ? "" : StringUtils.replace(body, "\n", "")));
+		if(LOG.isDebugEnabled()) {
+			LOG.debug("HTTP " + request.getMethod() + " " + request.getURI() + " " + (body == null ? "" : StringUtils.replace(body, "\n", "")));
+		}
 		String res = request(request);
-		LOG.debug("HTTP RESPONSE " + request.getURI() + " " + StringUtils.replace(res, "\n", ""));
+		if(LOG.isDebugEnabled()){
+			LOG.debug("HTTP RESPONSE " + request.getURI() + " " + StringUtils.replace(res, "\n", ""));
+		}
 		return res;
 	}
-	public static String post(String host, String path, Map<String, String> params, String body) {
-		return httpOption(new HttpPost(buildURI(host, path, params)), body);
+	public static String post(String host, String path, UrlParams urlParams, String body) {
+		return httpOption(new HttpPost(buildURI(host, path, urlParams)), body);
 	}
-	public static String put(String host, String path, Map<String, String> params, String body) {
-		return httpOption(new HttpPut(buildURI(host, path, params)), body);
+	public static String put(String host, String path, UrlParams urlParams, String body) {
+		return httpOption(new HttpPut(buildURI(host, path, urlParams)), body);
 	}
-	public static String get(String host, String path, Map<String, String> params) {
-		return httpOption(new HttpGet(buildURI(host, path, params)), null);
+	public static String get(String host, String path, UrlParams urlParams) {
+		return httpOption(new HttpGet(buildURI(host, path, urlParams)), null);
 	}
-	public static String delete(String host, String path, Map<String, String> params) {
-		return httpOption(new HttpDelete(buildURI(host, path, params)), null);
+	public static String delete(String host, String path, UrlParams urlParams) {
+		return httpOption(new HttpDelete(buildURI(host, path, urlParams)), null);
 	}
 
 	private static String request(HttpUriRequest request) {
@@ -60,13 +64,12 @@ public class HttpUtil {
 		}
 	}
 
-	private static URI buildURI(String host, String path, Map<String, String> params) {
-		URIBuilder builder = new URIBuilder().setScheme("http").setHost(host).setPath(path);
-		if(params != null && params.size() > 0){
-			for(String key : params.keySet()){
-				builder.addParameter(key, params.get(key));
-			}
-		}
+	private static URI buildURI(String host, String path, UrlParams params) {
+		URIBuilder builder = new URIBuilder()
+				.setScheme("http")
+				.setHost(host)
+				.setPath(path)
+				.setParameters(params.toNameValuePair());
 		try{
 			return builder.build();
 		}catch(Exception e){

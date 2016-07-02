@@ -3,9 +3,8 @@ package com.hurl.toolkit.elk;
 import com.hurl.toolkit.elk.data.ESDocument;
 import com.hurl.toolkit.elk.data.ESDocumentWithId;
 import com.hurl.toolkit.http.HttpUtil;
+import com.hurl.toolkit.http.UrlParams;
 import com.hurl.toolkit.json.JsonUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.HttpPost;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +14,13 @@ import java.util.Map;
  * Created by hurongliang on 16/6/25.
  */
 public class ES {
+    public static String setRefreshInterval(String host, String index, String interval){
+        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> indexMap = new HashMap<>();
+        param.put("index", indexMap);
+        indexMap.put("refresh_interval", interval);
+        return HttpUtil.put(host, "/" + index + "/_settings", UrlParams.empty(), JsonUtil.toString(param));
+    }
     public static String bulk(String host, String index, String type, List< ? extends ESDocument> docs) {
         StringBuffer sb = new StringBuffer();
         for(ESDocument doc : docs){
@@ -23,7 +29,7 @@ public class ES {
             }
             sb.append(JsonUtil.toString(doc) + "\n");
         }
-        return HttpUtil.post(host, "/" + index + "/" + type + "/_bulk", new ESParams().toMap(), sb.toString());
+        return HttpUtil.post(host, "/" + index + "/" + type + "/_bulk", UrlParams.empty(), sb.toString());
     }
     public static String setFieldMapping(String host, String index, String type, List<FieldMapping> mappings){
         Map<String, Object> typeMap = new HashMap<>();
@@ -46,24 +52,24 @@ public class ES {
                 fieldMap.put("format", mapping.getFormat());
             }
         }
-        return HttpUtil.post(host, "/" + index + "/_mapping" + "/" + type , new ESParams().toMap(), JsonUtil.toString(typeMap));
+        return HttpUtil.post(host, "/" + index + "/_mapping" + "/" + type , UrlParams.empty(), JsonUtil.toString(typeMap));
     }
     public static String deleteIndex(String host, String index){
-        return HttpUtil.delete(host, "/" + index, new ESParams().toMap());
+        return HttpUtil.delete(host, "/" + index, UrlParams.empty());
     }
     public static String createIndex(String host, String index){
-        return HttpUtil.post(host, "/" + index, new ESParams().toMap(), null);
+        return HttpUtil.post(host, "/" + index, UrlParams.empty(), null);
     }
     public static String clusterHealth(String host){
-        return HttpUtil.get(host, "/_cluster/health", new ESParams().toMap());
+        return HttpUtil.get(host, "/_cluster/health", UrlParams.empty());
     }
     public static String status(String host){
-        return HttpUtil.get(host, "/_cat/indices", new ESParams().put("v", "v").toMap());
+        return HttpUtil.get(host, "/_cat/indices", UrlParams.empty().setParam("v","v"));
     }
     public static String openIndex(String host, String index){
-        return HttpUtil.post(host, "/" + index + "/_open", null, null);
+        return HttpUtil.post(host, "/" + index + "/_open", UrlParams.empty(), null);
     }
     public static String closeIndex(String host, String index){
-        return HttpUtil.post(host, "/" + index + "/_close", null, null);
+        return HttpUtil.post(host, "/" + index + "/_close", UrlParams.empty(), null);
     }
 }
