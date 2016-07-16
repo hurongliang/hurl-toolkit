@@ -4,19 +4,18 @@ package com.hurl.toolkit.spider;
  * Created by hurongliang on 16/7/16.
  */
 public class Page {
-    private String url;
+    private PageRequest request;
     private String raw;
-    public Page(String url){
-        this.url = url;
+    public Page(PageRequest request){
+        this.request = request;
     }
     public void setRaw(String raw){
         this.raw = raw;
     }
-    public String url(){
-        return this.url;
+    public PageRequest getRequest(){
+        return this.request;
     }
     public String raw(){
         return this.raw;
     }
-
 }

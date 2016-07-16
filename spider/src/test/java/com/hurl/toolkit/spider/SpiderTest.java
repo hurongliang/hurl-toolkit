@@ -8,7 +8,10 @@ import org.junit.Test;
 public class SpiderTest {
     @Test
     public void start() throws SpiderException {
-        Spider.create(new SimpleURLIterator("http://www.baidu.com"))
-                .pageProcessor(page -> System.out.println(page.url())).start();
+        Spider.create(new SimplePageIterator("http://www.baidu.com"))
+                .pageProcessor(page -> {
+                    System.out.println("get " + page.getRequest());
+                    System.out.println("content " + page.raw());
+                }).start();
     }
 }
