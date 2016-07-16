@@ -1,5 +1,6 @@
 package com.hurl.toolkit.spider;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -9,6 +10,7 @@ import java.net.URISyntaxException;
 public class Spider {
     private PageRequestIterator urlIterator;
     private PageProcessor pageProcessor;
+    private PageResultProcessor pageResultProcessor;
     private SiteConfig siteConfig;
     private Downloader downloader;
     private int thread = 1;
@@ -36,6 +38,11 @@ public class Spider {
         return this;
     }
 
+    public Spider pageResultProcessor(PageResultProcessor pageResultProcessor){
+        this.pageResultProcessor = pageResultProcessor;
+        return this;
+    }
+
     public void start()throws SpiderException{
         init();
         try{
@@ -51,7 +58,10 @@ public class Spider {
         Page page = new Page(pageRequest);
         String raw = downloader.download(pageRequest.getURI());
         page.setRaw(raw);
-        pageProcessor.process(page);
+        Serializable s = pageProcessor.process(page);
+        if(this.pageResultProcessor != null){
+            this.pageResultProcessor.process(s);
+        }
     }
 
     private void init() throws SpiderException {
