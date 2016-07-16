@@ -41,6 +41,18 @@ public class HttpUtil {
 		}
 		return res;
 	}
+    public static String post(URI uri, String body) {
+        return httpOption(new HttpPost(uri), body);
+    }
+    public static String get(URI uri, String body) {
+        return httpOption(new HttpGet(uri), body);
+    }
+    public static String delete(URI uri, String body) {
+        return httpOption(new HttpDelete(uri), body);
+    }
+    public static String put(URI uri, String body) {
+        return httpOption(new HttpPut(uri), body);
+    }
 	public static String post(String host, String path, UrlParams urlParams, String body) {
 		return httpOption(new HttpPost(buildURI(host, path, urlParams)), body);
 	}

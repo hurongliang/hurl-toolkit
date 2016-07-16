@@ -15,6 +15,7 @@
 	<module>http</module>
 	<module>jdbc</module>
     <module>elk</module>
+      <module>spider</module>
   </modules>
 
   <properties>
