@@ -1,7 +1,6 @@
 package com.hurl.toolkit.spider;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
