@@ -2,9 +2,12 @@ package com.hurl.toolkit.http;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -16,6 +19,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +71,10 @@ public class HttpUtil {
 	}
 
 	private static String request(HttpUriRequest request) {
-		CloseableHttpClient client = HttpClients.createDefault();
+        List<Header> defaultHeaders = new ArrayList<>();
+        defaultHeaders.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; rv:6.0.2) Gecko/20100101 Firefox/6.0.2"));
+		CloseableHttpClient client = HttpClients.custom()
+                .setDefaultHeaders(defaultHeaders).build();
 		try {
 			String res = client.execute(request, new StringResponseHandler());
 			return res;
