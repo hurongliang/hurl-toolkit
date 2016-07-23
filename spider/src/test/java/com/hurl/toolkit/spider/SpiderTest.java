@@ -1,9 +1,7 @@
 package com.hurl.toolkit.spider;
 
+import com.hurl.toolkit.spider.impl.BasicRequestIterator;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by hurongliang on 16/7/16.
@@ -11,16 +9,16 @@ import java.util.Map;
 public class SpiderTest {
     @Test
     public void start() throws SpiderException {
-        Spider.create(new SimplePageIterator("http://www.baidu.com"))
+        Spider.create(new BasicRequestIterator("http://www.baidu.com"))
                 .pageProcessor(page -> {
                     PageResult result = new PageResult();
-                    result.setUrl(page.getRequest().getURI().toASCIIString());
+                    result.setUrl(page.getRequest().getUrl());
                     result.setContent(page.raw());
                     return result;
-                }).pageResultProcessor(result -> {
+                }).pipeline(result -> {
             if (result instanceof PageResult) {
                 System.out.println("get " + ((PageResult) result).getUrl());
-                System.out.println("content " + ((PageResult)result).getContent());
+                System.out.println("content " + ((PageResult) result).getContent());
             }
         }).start();
     }

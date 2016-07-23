@@ -1,24 +1,29 @@
 package com.hurl.toolkit.spider;
 
+import com.hurl.toolkit.spider.impl.EmptyPageProcessor;
+import com.hurl.toolkit.spider.impl.HtmlDownloader;
+
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
  * Created by hurongliang on 16/7/16.
  */
 public class Spider {
-    private PageRequestIterator urlIterator;
+    private RequestIterator urlIterator;
     private PageProcessor pageProcessor;
-    private PageResultProcessor pageResultProcessor;
+    private Pipeline pipeline;
     private SiteConfig siteConfig;
     private Downloader downloader;
     private int thread = 1;
 
-    public Spider(PageRequestIterator urlIterator){
-        this.urlIterator = urlIterator;
+    public Spider(RequestIterator requestIterator){
+        this.urlIterator = requestIterator;
     }
-    public static Spider create(PageRequestIterator urlIterator){
-        return new Spider(urlIterator);
+    public static Spider create(RequestIterator requestIterator){
+        return new Spider(requestIterator);
     }
     public Spider siteConfig(SiteConfig siteConfig){
         this.siteConfig = siteConfig;
@@ -37,8 +42,8 @@ public class Spider {
         return this;
     }
 
-    public Spider pageResultProcessor(PageResultProcessor pageResultProcessor){
-        this.pageResultProcessor = pageResultProcessor;
+    public Spider pipeline(Pipeline pipeline){
+        this.pipeline = pipeline;
         return this;
     }
 
@@ -53,13 +58,13 @@ public class Spider {
         }
     }
 
-    private void craw(PageRequest pageRequest) throws URISyntaxException {
+    private void craw(Request pageRequest) throws URISyntaxException, MalformedURLException {
         Page page = new Page(pageRequest);
-        String raw = downloader.download(pageRequest.getURI());
+        String raw = downloader.download(new URI(pageRequest.getUrl()));
         page.setRaw(raw);
         Serializable s = pageProcessor.process(page);
-        if(this.pageResultProcessor != null){
-            this.pageResultProcessor.process(s);
+        if(this.pipeline != null){
+            this.pipeline.process(s);
         }
     }
 

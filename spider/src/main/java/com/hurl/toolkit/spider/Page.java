@@ -4,15 +4,15 @@ package com.hurl.toolkit.spider;
  * Created by hurongliang on 16/7/16.
  */
 public class Page {
-    private PageRequest request;
+    private Request request;
     private String raw;
-    public Page(PageRequest request){
+    public Page(Request request){
         this.request = request;
     }
     public void setRaw(String raw){
         this.raw = raw;
     }
-    public PageRequest getRequest(){
+    public Request getRequest(){
         return this.request;
     }
     public String raw(){
