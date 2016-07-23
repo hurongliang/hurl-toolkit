@@ -3,7 +3,6 @@ package com.hurl.toolkit.spider;
 import com.hurl.toolkit.spider.impl.EmptyPageProcessor;
 import com.hurl.toolkit.spider.impl.HtmlDownloader;
 
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,7 +13,7 @@ import java.net.URISyntaxException;
 public class Spider {
     private RequestIterator urlIterator;
     private PageProcessor pageProcessor;
-    private Pipeline pipeline;
+    private ResultProcessor resultProcessor;
     private SiteConfig siteConfig;
     private Downloader downloader;
     private int thread = 1;
@@ -42,8 +41,8 @@ public class Spider {
         return this;
     }
 
-    public Spider pipeline(Pipeline pipeline){
-        this.pipeline = pipeline;
+    public Spider pipeline(ResultProcessor resultProcessor){
+        this.resultProcessor = resultProcessor;
         return this;
     }
 
@@ -62,9 +61,9 @@ public class Spider {
         Page page = new Page(pageRequest);
         String raw = downloader.download(new URI(pageRequest.getUrl()));
         page.setRaw(raw);
-        Serializable s = pageProcessor.process(page);
-        if(this.pipeline != null){
-            this.pipeline.process(s);
+        Object s = pageProcessor.process(page);
+        if(s!=null && this.resultProcessor != null){
+            this.resultProcessor.process(s);
         }
     }
 
