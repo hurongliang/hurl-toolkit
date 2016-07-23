@@ -15,7 +15,7 @@ public class SpiderTest {
                     result.setUrl(page.getRequest().getUrl());
                     result.setContent(page.raw());
                     return result;
-                }).pipeline(result -> {
+                }).resultProcessor(result -> {
             if (result instanceof PageResult) {
                 System.out.println("get " + ((PageResult) result).getUrl());
                 System.out.println("content " + ((PageResult) result).getContent());

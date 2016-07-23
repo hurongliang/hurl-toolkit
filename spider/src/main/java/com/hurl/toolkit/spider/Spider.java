@@ -41,7 +41,7 @@ public class Spider {
         return this;
     }
 
-    public Spider pipeline(ResultProcessor resultProcessor){
+    public Spider resultProcessor(ResultProcessor resultProcessor){
         this.resultProcessor = resultProcessor;
         return this;
     }
