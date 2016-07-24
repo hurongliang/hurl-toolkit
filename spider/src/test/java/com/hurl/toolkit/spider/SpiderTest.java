@@ -9,7 +9,7 @@ import org.junit.Test;
 public class SpiderTest {
     @Test
     public void start() throws SpiderException {
-        Spider.create(new BasicRequestIterator("http://www.baidu.com"))
+        Spider.ofType(Object.class).requestIterator(new BasicRequestIterator("http://www.baidu.com"))
                 .pageProcessor(page -> {
                     PageResult result = new PageResult();
                     result.setUrl(page.getRequest().getUrl());
