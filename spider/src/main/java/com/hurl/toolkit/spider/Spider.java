@@ -2,12 +2,16 @@ package com.hurl.toolkit.spider;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
+import com.google.common.util.concurrent.AsyncFunction;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -88,20 +92,6 @@ public class Spider<T> {
             return page;
         });
 
-        Page page = null;
-        try {
-			page = f1.get(siteConfig.getConnectionTimeout(), TimeUnit.SECONDS);
-		} catch (TimeoutException e1) {
-			throw new SpiderException("抓取超时", e1);
-		} catch (Exception e2) {
-			throw new SpiderException("抓取出错", e2);
-		}
-        
-        T result = pageProcessor.process(page);
-        
-        resultProcessor.process(result);
-        
-        /*
         ListenableFuture<T> f2 = Futures.transform(f1, new AsyncFunction<Page, T>() {
             @Override
             public ListenableFuture<T> apply(Page o) throws Exception {
@@ -113,28 +103,22 @@ public class Spider<T> {
                 });
             }
         });
-
-        Futures.addCallback(f2, new FutureCallback<T>() {
-            @Override
-            public void onSuccess(T o) {
-                resultProcessor.process(o);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                throwable.printStackTrace();
-            }
+        
+        ListenableFuture<Boolean> f3 = Futures.transform(f2, new AsyncFunction<T, Boolean>() {
+			@Override
+			public ListenableFuture<Boolean> apply(T arg0) throws Exception {
+				return service.submit(() -> {
+					resultProcessor.process(arg0);
+					return Boolean.TRUE;
+				});
+			}
         });
         
         try {
-			f2.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+			f3.get();
+		} catch (Exception e) {
+			throw new SpiderException("Spider执行出错", e);
 		}
-		
-		*/
     }
 
     private void init() throws SpiderException {
@@ -153,7 +137,7 @@ public class Spider<T> {
         }
     }
 
-    public void startAsync() throws SpiderException{
+    public void startInBackground() throws SpiderException{
         init();
         try{
             while(urlIterator.hasNext()){
