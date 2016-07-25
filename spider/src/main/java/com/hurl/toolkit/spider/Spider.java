@@ -3,14 +3,12 @@ package com.hurl.toolkit.spider;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.util.concurrent.AsyncFunction;
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -26,8 +24,8 @@ public class Spider<T> {
     private PageProcessor<T> pageProcessor;
     private ResultProcessor<T> resultProcessor;
     private SiteConfig siteConfig;
-    private Downloader downloader;
-    private static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+    private Crawer crawer;
+    private static ListeningExecutorService service = MoreExecutors.newDirectExecutorService();//.listeningDecorator(Executors.newFixedThreadPool(10));
     private ThreadPoolExecutor jobService;
     private int thread = 1;
 
@@ -55,8 +53,8 @@ public class Spider<T> {
         this.pageProcessor = pageProcessor;
         return this;
     }
-    public Spider<T> downloader(Downloader downloader){
-        this.downloader = downloader;
+    public Spider<T> crawer(Crawer crawer){
+        this.crawer = crawer;
         return this;
     }
     public Spider<T> thread(int thread){
@@ -71,23 +69,19 @@ public class Spider<T> {
 
     public void start()throws SpiderException{
         init();
-        try{
-            while(urlIterator.hasNext()){
-            		try {
-						craw(urlIterator.next());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-            }
-        }catch(Exception e){
-            throw new SpiderException("spider failure", e);
+        while(urlIterator.hasNext()){
+    		try {
+				crawPage(urlIterator.next());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         }
     }
 
-    private void craw(Request pageRequest) throws SpiderException {
+    private void crawPage(Request pageRequest) throws SpiderException {
         ListenableFuture<Page> f1 = service.submit(() -> {
             Page page = new Page(pageRequest);
-            String raw = downloader.download(new URI(pageRequest.getUrl()));
+            String raw = crawer.craw(new URI(pageRequest.getUrl()));
             page.setRaw(raw);
             return page;
         });
@@ -125,7 +119,7 @@ public class Spider<T> {
         if(urlIterator == null) throw new SpiderException("url interator is undefined.");
         if(pageProcessor == null) pageProcessor = new EmptyPageProcessor<T>();
         if(siteConfig == null) siteConfig = SiteConfig.getDefault();
-        if(downloader == null) downloader = new HtmlDownloader();
+        if(crawer == null) crawer = new HtmlDownloader();
         if(jobService == null) {
         	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1,
                     thread,
@@ -143,7 +137,7 @@ public class Spider<T> {
             while(urlIterator.hasNext()){
             	jobService.submit(() -> {
             		try {
-						craw(urlIterator.next());
+						crawPage(urlIterator.next());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -12,18 +12,6 @@ import java.util.Map;
 
 public class DBManager {
 	private DBConfig config;
-	
-	public static void main(String[] args){
-		DBConfig config = new DBConfig();
-		config.setConnectUrl("jdbc:mysql://localhost:3306/twooneo1_waguji?useUnicode=true&amp;characterEncoding=UTF-8");
-		config.setDriverClass("com.mysql.jdbc.Driver");
-		config.setUser("twooneo1_waguji");
-		config.setPassword("waguji");
-		
-		DBManager manager = DBManager.newInstance(config);
-		List<Map<String,Object>>list = manager.query("select * from t_dm_gp");
-		System.out.println(list);
-	}
 	public static DBManager newInstance(DBConfig config){
 		return new DBManager(config);
 	}
