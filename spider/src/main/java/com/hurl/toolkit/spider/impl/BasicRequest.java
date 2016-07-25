@@ -26,4 +26,8 @@ public class BasicRequest implements Request {
     public String getUrl() {
         return this.uri;
     }
+    
+    public String toString(){
+    	return "BasicRequest[" + this.uri + "]";
+    }
 }

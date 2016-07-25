@@ -117,7 +117,7 @@ public class Spider<T> {
         try {
 			f3.get();
 		} catch (Exception e) {
-			throw new SpiderException("Spider执行出错", e);
+			throw new SpiderException("执行" + pageRequest + "出错", e);
 		}
     }
 
