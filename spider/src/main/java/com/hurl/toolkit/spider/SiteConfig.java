@@ -41,6 +41,10 @@ public class SiteConfig {
         return interval;
     }
 
+    /**
+     * 设置两次抓取页面的时间间隔（毫秒）
+     * @param interval
+     */
     public void setInterval(int interval) {
         this.interval = interval;
     }

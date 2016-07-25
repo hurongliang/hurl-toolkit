@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -13,7 +12,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -37,11 +40,15 @@ public class HttpUtil {
 			}
 		}
 		if(LOG.isDebugEnabled()) {
-			LOG.debug("HTTP " + request.getMethod() + " " + request.getURI() + " " + (body == null ? "" : StringUtils.replace(body, "\n", "")));
+			LOG.debug("HTTP REQUEST: " + request.getURI());
 		}
 		String res = request(request);
 		if(LOG.isDebugEnabled()){
-			LOG.debug("HTTP RESPONSE " + request.getURI() + " " + StringUtils.replace(res, "\n", ""));
+			if(res != null && res.length() > 200){
+				LOG.debug("HTTP RESPONSE: " + StringUtils.replace(res.substring(0, 200) + "...", "\n", ""));
+			} else {
+				LOG.debug("HTTP RESPONSE: " + StringUtils.replace(res, "\n", ""));
+			}
 		}
 		return res;
 	}

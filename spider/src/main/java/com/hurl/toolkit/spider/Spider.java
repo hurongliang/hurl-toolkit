@@ -3,7 +3,6 @@ package com.hurl.toolkit.spider;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -75,6 +74,13 @@ public class Spider<T> {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+    		if(siteConfig.getInterval() > 0){
+    			try {
+					Thread.sleep(siteConfig.getInterval());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+    		}
         }
     }
 
