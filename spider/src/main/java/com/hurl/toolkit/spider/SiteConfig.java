@@ -48,4 +48,24 @@ public class SiteConfig {
     public void setInterval(int interval) {
         this.interval = interval;
     }
+    
+    public static Builder custom(){
+    	return new Builder();
+    }
+    
+    public static class Builder{
+    	private SiteConfig config = null;
+    	private Builder(){
+    		config = SiteConfig.getDefault();
+    	}
+    	
+    	public Builder setEncoding(String encoding){
+    		config.setEncoding(encoding);
+    		return this;
+    	}
+    	
+    	public SiteConfig build(){
+    		return config;
+    	}
+    }
 }

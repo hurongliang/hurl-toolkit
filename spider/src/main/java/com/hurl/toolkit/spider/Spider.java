@@ -125,7 +125,7 @@ public class Spider<T> {
         if(urlIterator == null) throw new SpiderException("url interator is undefined.");
         if(pageProcessor == null) pageProcessor = new EmptyPageProcessor<T>();
         if(siteConfig == null) siteConfig = SiteConfig.getDefault();
-        if(crawer == null) crawer = new HtmlDownloader();
+        if(crawer == null) crawer = new HtmlDownloader(siteConfig);
         if(jobService == null) {
         	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1,
                     thread,
